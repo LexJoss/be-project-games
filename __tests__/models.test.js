@@ -5,10 +5,6 @@ const  db   = require ("../db/connection")
 const app = require ("../db/app")
 
 
-
-
-
-
 beforeEach(() => {
     return seed(data)
 })
@@ -31,6 +27,7 @@ describe("app.get", () => {
             })
         })
     })
+
     test("The returned array contains the complete categories column", () => {
         return request(app).get('/api/categories').expect(200)
         .then(response => {
@@ -85,4 +82,6 @@ describe("2nd endpoint, reviews, can return status 200", () => {
     })
 })
 
+
+})
 

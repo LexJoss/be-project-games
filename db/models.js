@@ -1,5 +1,6 @@
 const  db  = require ("./connection")
 
+
 const fetchCategories = (find_by, ascDesc = 'asc') => {
     parameter = find_by.search
     order = ascDesc
@@ -16,6 +17,9 @@ const fetchCategories = (find_by, ascDesc = 'asc') => {
     }
 
 
+
+const fetchCategories = () => {
+    let sqlString = `SELECT * FROM categories`
 
     return db.query(sqlString)
     .then(({rows}) => rows)
