@@ -20,8 +20,18 @@ const fetchReviews = () => {
         .then (({rows}) => rows)
     }
 
+const fetchReviewByID = (sort_by) => {
+    const search = sort_by
+    const sqlString = `SELECT * FROM reviews
+    WHERE review_id=${search};`
+    
+    
+    return db.query(sqlString)
+    .then(({rows}) => rows)
+}
 
 
 
 
-module.exports = { fetchCategories, fetchReviews }
+
+module.exports = { fetchCategories, fetchReviews, fetchReviewByID }

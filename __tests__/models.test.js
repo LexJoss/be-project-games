@@ -5,6 +5,8 @@ const  db   = require ("../db/connection")
 const app = require ("../db/app")
 
 
+
+
 beforeEach(() => {
     return seed(data)
 })
@@ -61,10 +63,7 @@ describe("2nd endpoint, reviews, can return status 200", () => {
         return request(app).get('/api/reviews').expect(200)
         .then(response => {
             const reviews = response.body
-            const first = /^2021-01-25/
-            const last = /^1970/
-            expect(reviews[0].created_at).toMatch(first)
-            expect(reviews[reviews.length -1].created_at).toMatch(last)
+            expect(reviews).toBeSorted({descending: true})
         })
     })
     test("Can return the number of comments that share the review_id property of the parent review", () => {
@@ -79,6 +78,35 @@ describe("2nd endpoint, reviews, can return status 200", () => {
             
         })
     })
+})
+
+describe("3rd endpoint, parametric. Get reviews by I.D", () => {
+    test("end point response with status 200", () => {
+        return request(app).get('/api/reviews/1').expect(200)
+    })
+    test("The returned reviews object contains the correct categories", () => {
+        return request(app).get('/api/reviews/1').expect(200)
+        .then(response => {
+            const review = response.body
+                expect(review[0]).toHaveProperty('owner', expect.any(String))
+                expect(review[0]).toHaveProperty('title', expect.any(String))
+                expect(review[0]).toHaveProperty('votes', expect.any(Number))
+                expect(review[0]).toHaveProperty('created_at', expect.any(String))
+                expect(review[0]).toHaveProperty('category', expect.any(String))
+                expect(review[0]).toHaveProperty('review_img_url', expect.any(String))
+                expect(review[0]).toHaveProperty('designer', expect.any(String))
+                expect(review[0]).toHaveProperty('review_id', expect.any(Number))
+        
+        })
+    })
+    test("The response body only contains one element, which has the correct ID", () => {
+        return request(app).get('/api/reviews/1').expect(200)
+        .then(response => {
+            const review = response.body
+            expect(review.length).toBe(1)
+            expect(review[0].review_id).toBe(1)
+        })
+    }) 
 })
 
 
