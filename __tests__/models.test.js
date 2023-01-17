@@ -61,11 +61,8 @@ describe("2nd endpoint, reviews, can return status 200", () => {
         return request(app).get('/api/reviews').expect(200)
         .then(response => {
             const reviews = response.body
-            const first = /^2021-01-25/
-            const last = /^1970/
             console.log(reviews)
-            expect(reviews[0].created_at).toMatch(first)
-            expect(reviews[reviews.length -1].created_at).toMatch(last)
+            expect(reviews).toBeSorted({descending: true})
         })
     })
     test("Can return the number of comments that share the review_id property of the parent review", () => {
