@@ -1,18 +1,19 @@
-const { fetchCategories } = require ('./models')
+const { fetchCategories, fetchReviews } = require ('./models')
 
 
 
 const getCategories = (req, res, next) => {
-
-    const search = req.params
-    fetchCategories(search)
-    .then((returnValue) => {
-        res.status(200).send(returnValue)
-
     fetchCategories()
     .then((categories) => {
-        res.status(200).send(categories)
+        res.status(200).send(categories)}
+        )}
 
+    
+
+const getReviews = (req, res, next) => {
+    fetchReviews()
+    .then((reviews) => {
+        res.status(200).send(reviews)
     })
 }
 
@@ -22,4 +23,4 @@ const getCategories = (req, res, next) => {
 
 
 
-module.exports = getCategories
+module.exports = { getCategories, getReviews}
