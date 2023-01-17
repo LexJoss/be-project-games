@@ -61,7 +61,6 @@ describe("2nd endpoint, reviews, can return status 200", () => {
         return request(app).get('/api/reviews').expect(200)
         .then(response => {
             const reviews = response.body
-            console.log(reviews)
             expect(reviews).toBeSorted({descending: true})
         })
     })
