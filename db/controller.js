@@ -35,7 +35,6 @@ const getCommentsByRid = (req, res, next) => {
     const query = req.params
     fetchCommentsByRid(query)
     .then((comments) => {
-        console.log(comments)
         res.status(200).send(comments)
     })
     .catch(err => next(err))

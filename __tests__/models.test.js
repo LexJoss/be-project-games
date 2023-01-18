@@ -48,6 +48,7 @@ describe("2nd endpoint, reviews, can return status 200", () => {
         return request(app).get('/api/reviews').expect(200)
         .then(response => {
             const reviews = response.body
+            expect(reviews.length).not.toBe(0)
             reviews.forEach((review) => {
                 console.log(review)
                 expect(review).toHaveProperty('owner', expect.any(String))
@@ -75,7 +76,6 @@ describe("2nd endpoint, reviews, can return status 200", () => {
             const reviews = response.body
             const regex = /[0-9]*/
             reviews.forEach((review) => {
-                console.log(review)
                 expect(review).toHaveProperty('comment_count', expect.any(String))
                 expect(review.comment_count).toMatch(regex)
             })
@@ -112,7 +112,7 @@ describe("3rd endpoint, parametric. Get reviews by I.D", () => {
         })
     }) 
     test("Will respond with an error message if an unavailable ID is given", () => {
-        return request(app).get('/api/reviews/10000').expect(404)
+        return request(app).get('/api/reviews/10000').expect(400)
         .then((response) => {
             expect(response.body.msg).toBe("Not Found")
         })
@@ -122,10 +122,12 @@ describe("4th endpoint, comments by review id", () => {
     test("4th endpoint responds with a status 200", () => {
         return request(app).get('/api/reviews/2/comments').expect(200)
     })
+ })
     test("The return object has the correct keys for a comment", () => {
         return request(app).get('/api/reviews/2/comments').expect(200)
         .then (response => {
             const comments = response.body
+            expect(comments.length).not.toBe(0)
             comments.forEach((comment) => {
             expect(comment).toHaveProperty('comment_id', expect.any(Number))
             expect(comment).toHaveProperty('votes', expect.any(Number))
@@ -146,12 +148,12 @@ describe("4th endpoint, comments by review id", () => {
         })
     })
     test("Will respond with an error message if an unavailable ID is given", () => {
-        return request(app).get('/api/reviews/1/comments').expect(404)
+        return request(app).get('/api/reviews/1/comments').expect(400)
         .then((response) => {
             expect(response.body.msg).toBe("Not Found")
         })
     })
-})
+
 
 
 

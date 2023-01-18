@@ -28,7 +28,7 @@ const fetchReviewByID = (review_id) => {
     return db.query(sqlString, [review_id])
     .then(({rows}) => {
         if (rows.length === 0) {
-            return Promise.reject({status: 404, msg: "Not Found"})
+            return Promise.reject({status: 400, msg: "Not Found"})
         } else {
             return rows}
     })
@@ -44,7 +44,7 @@ const fetchCommentsByRid = (review_id) => {
     return db.query(sqlString, values)
     .then(({rows}) => {
         if (rows.length === 0) {
-            return Promise.reject({status: 404, msg: "Not Found"})
+            return Promise.reject({status: 400, msg: "Not Found"})
         } else {
             return rows}
     })
