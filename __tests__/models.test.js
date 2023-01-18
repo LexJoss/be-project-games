@@ -50,7 +50,6 @@ describe("2nd endpoint, reviews, can return status 200", () => {
             const reviews = response.body
             expect(reviews.length).not.toBe(0)
             reviews.forEach((review) => {
-                console.log(review)
                 expect(review).toHaveProperty('owner', expect.any(String))
                 expect(review).toHaveProperty('title', expect.any(String))
                 expect(review).toHaveProperty('votes', expect.any(Number))
@@ -122,7 +121,7 @@ describe("4th endpoint, comments by review id", () => {
     test("4th endpoint responds with a status 200", () => {
         return request(app).get('/api/reviews/2/comments').expect(200)
     })
- })
+
     test("The return object has the correct keys for a comment", () => {
         return request(app).get('/api/reviews/2/comments').expect(200)
         .then (response => {
@@ -153,7 +152,7 @@ describe("4th endpoint, comments by review id", () => {
             expect(response.body.msg).toBe("Not Found")
         })
     })
-
+})
 
 
 
