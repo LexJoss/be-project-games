@@ -3,6 +3,8 @@ const seed = require ("../db/seeds/seed")
 const data = require ("../db/data/test-data/index")
 const  db   = require ("../db/connection")
 const app = require ("../db/app")
+const comments = require("../db/data/test-data/comments")
+
 
 
 
@@ -47,6 +49,7 @@ describe("2nd endpoint, reviews, can return status 200", () => {
         .then(response => {
             const reviews = response.body
             reviews.forEach((review) => {
+                console.log(review)
                 expect(review).toHaveProperty('owner', expect.any(String))
                 expect(review).toHaveProperty('title', expect.any(String))
                 expect(review).toHaveProperty('votes', expect.any(Number))
@@ -66,12 +69,13 @@ describe("2nd endpoint, reviews, can return status 200", () => {
             expect(reviews).toBeSorted({descending: true})
         })
     })
-    test("Can return the number of comments that share the review_id property of the parent review", () => {
+    test.only("Can return the number of comments that share the review_id property of the parent review", () => {
         return request(app).get('/api/reviews').expect(200)
         .then(response => {
             const reviews = response.body
             const regex = /[0-9]*/
             reviews.forEach((review) => {
+                console.log(review)
                 expect(review).toHaveProperty('comment_count', expect.any(String))
                 expect(review.comment_count).toMatch(regex)
             })
@@ -107,7 +111,49 @@ describe("3rd endpoint, parametric. Get reviews by I.D", () => {
             expect(review[0].review_id).toBe(1)
         })
     }) 
+    test("Will respond with an error message if an unavailable ID is given", () => {
+        return request(app).get('/api/reviews/10000').expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe("Not Found")
+        })
+    })
 })
+describe("4th endpoint, comments by review id", () => {
+    test("4th endpoint responds with a status 200", () => {
+        return request(app).get('/api/reviews/2/comments').expect(200)
+    })
+    test("The return object has the correct keys for a comment", () => {
+        return request(app).get('/api/reviews/2/comments').expect(200)
+        .then (response => {
+            const comments = response.body
+            comments.forEach((comment) => {
+            expect(comment).toHaveProperty('comment_id', expect.any(Number))
+            expect(comment).toHaveProperty('votes', expect.any(Number))
+            expect(comment).toHaveProperty('created_at', expect.any(String))
+            expect(comment).toHaveProperty('author', expect.any(String))
+            expect(comment).toHaveProperty('body', expect.any(String))
+            expect(comment).toHaveProperty('review_id', expect.any(Number))
+        })
+    })
+    })
+    test('The return object resolves with the correct review_id per comment', () => {
+        return request(app).get('/api/reviews/2/comments').expect(200)
+        .then (response => {
+            const comments = response.body
+            comments.forEach((comment) =>{
+                expect(comment.review_id).toBe(2)
+            })
+        })
+    })
+    test("Will respond with an error message if an unavailable ID is given", () => {
+        return request(app).get('/api/reviews/1/comments').expect(404)
+        .then((response) => {
+            expect(response.body.msg).toBe("Not Found")
+        })
+    })
+})
+
+
 
 
 

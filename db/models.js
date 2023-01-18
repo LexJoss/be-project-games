@@ -10,7 +10,7 @@ const fetchCategories = () => {
 
 const fetchReviews = () => {
     
-    let sqlString = `SELECT reviews.*, count(*) AS comment_count 
+    let sqlString = `SELECT reviews.*, count(comments.review_id) AS comment_count 
         FROM reviews 
             FULL JOIN comments ON reviews.review_id = comments.review_id
         GROUP BY reviews.review_id
@@ -20,18 +20,40 @@ const fetchReviews = () => {
         .then (({rows}) => rows)
     }
 
-const fetchReviewByID = (sort_by) => {
-    const search = sort_by
+const fetchReviewByID = (review_id) => {
     const sqlString = `SELECT * FROM reviews
-    WHERE review_id=${search};`
+    WHERE reviews.review_id = $1;`
     
     
-    return db.query(sqlString)
-    .then(({rows}) => rows)
+    return db.query(sqlString, [review_id])
+    .then(({rows}) => {
+        if (rows.length === 0) {
+            return Promise.reject({status: 404, msg: "Not Found"})
+        } else {
+            return rows}
+    })
+}
+        
+
+const fetchCommentsByRid = (review_id) => {
+    console.log(typeof review_id.review_id)
+    const values = [review_id.review_id]
+    const sqlString = `SELECT * FROM comments
+    WHERE comments.review_id = $1;`
+
+    return db.query(sqlString, values)
+    .then(({rows}) => {
+        if (rows.length === 0) {
+            return Promise.reject({status: 404, msg: "Not Found"})
+        } else {
+            return rows}
+    })
 }
 
 
 
-
-
-module.exports = { fetchCategories, fetchReviews, fetchReviewByID }
+module.exports = { 
+    fetchCategories, 
+    fetchReviews, 
+    fetchReviewByID, 
+    fetchCommentsByRid }
