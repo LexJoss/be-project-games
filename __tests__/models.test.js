@@ -69,7 +69,7 @@ describe("2nd endpoint, reviews, can return status 200", () => {
             expect(reviews).toBeSorted({descending: true})
         })
     })
-    test.only("Can return the number of comments that share the review_id property of the parent review", () => {
+    test("Can return the number of comments that share the review_id property of the parent review", () => {
         return request(app).get('/api/reviews').expect(200)
         .then(response => {
             const reviews = response.body
