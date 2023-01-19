@@ -56,7 +56,8 @@ const postComments = (query, post) => {
 
     const sqlString = `INSERT INTO comments (review_id, body, author)
     VALUES
-    ($1, $2, $3);`
+    ($1, $2, $3)
+    RETURNING *;`
 
     return fetchReviewByID(query.review_id)
         .then(() => { return db.query(sqlString, values) })

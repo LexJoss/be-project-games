@@ -173,7 +173,7 @@ describe("4th endpoint, comments by review id", () => {
         })
     })
 })
-    describe("5th endpoint, posting comments", () => {
+    describe.only("5th endpoint, posting comments", () => {
         test("5th endpoint response with a status", () => {
           return request(app).post('/api/reviews/1/comments').expect(201).send({
             body: "blah blah blah", username : 'bainesface'})
@@ -201,7 +201,25 @@ describe("4th endpoint, comments by review id", () => {
                     expect(response.body.msg).toBe("Bad Request")
                 })
         })
+        test('Returns the posted comment', () => {
+            return request(app).post('/api/reviews/1/comments').expect(201).send({
+                body: "blah blah blah", username : 'bainesface'})
+    
+                .then(response => {
+                    expect(response.length).not.toBe(0)
+                    const comment = response.body
+                    console.log(comment)
+                    expect(comment[0].body).toBe("blah blah blah")
+                    expect(comment[0].review_id).toBe(1)
+                    expect(comment[0].author).toBe('bainesface')
+                    expect(comment[0]).toHaveProperty('created_at', expect.any(String))
+                    expect(comment[0]).toHaveProperty('votes', expect.any(Number))
+                    expect(comment[0].comment_id).toBe(7)
+                    
+                })
+    
         //remember to include test for invalid usernames ones endpoint get:users is complete
+    })
 })
 
 
