@@ -111,7 +111,7 @@ describe("3rd endpoint, parametric. Get reviews by I.D", () => {
         })
     }) 
     test("Will respond with an error message if an unavailable ID is given", () => {
-        return request(app).get('/api/reviews/10000').expect(400)
+        return request(app).get('/api/reviews/10000').expect(404)
         .then((response) => {
             expect(response.body.msg).toBe("Not Found")
         })
@@ -119,7 +119,7 @@ describe("3rd endpoint, parametric. Get reviews by I.D", () => {
     test("Will respond with an error message if an invalid parameter is given", () => {
         return request(app).get('/api/reviews/cheese').expect(400)
         .then((response) => {
-            expect(response.body.msg).toBe("Not Found")
+            expect(response.body.msg).toBe("Bad Request")
         })
     })
 })
@@ -153,7 +153,7 @@ describe("4th endpoint, comments by review id", () => {
         })
     })
     test("Will respond with an error message if an unavailable ID is given", () => {
-        return request(app).get('/api/reviews/1/comments').expect(400)
+        return request(app).get('/api/reviews/10000/comments').expect(404)
         .then((response) => {
             expect(response.body.msg).toBe("Not Found")
         })
@@ -161,10 +161,26 @@ describe("4th endpoint, comments by review id", () => {
     test("Will respond with an error message if an invalid parameter is given", () => {
         return request(app).get('/api/reviews/cheese').expect(400)
         .then((response) => {
-            expect(response.body.msg).toBe("Not Found")
+            expect(response.body.msg).toBe("Bad Request")
+        })
+    })
+    test("Will respond with an empty array if the parent review has no comments", () => {
+        return request(app).get('/api/reviews/1/comments').expect(200)
+        .then((response) => {
+            const comments = response.body
+            expect(comments.length).toBe(0)
         })
     })
 })
+    describe("5th endpoint, posting comments", () => {
+        test.skip("5th endpoint response with a status", () => {
+            return request(app).post('/api/reviews/1/comments', {
+                post : "It was okay"
+            }).expect(200)
+
+        })
+    })
+    
 
 
 

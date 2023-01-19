@@ -40,6 +40,13 @@ const getCommentsByRid = (req, res, next) => {
     .catch(err => next(err))
 }
 
+const sendComments = (req, res, next) => {
+    const query = req.params
+    const post = req.param.body
+    console.log(post)
+    
+}
+
 
 
 
@@ -49,4 +56,5 @@ module.exports = {
     getCategories, 
     getReviews, 
     getReviewsByID, 
-    getCommentsByRid}
+    getCommentsByRid,
+    sendComments}
