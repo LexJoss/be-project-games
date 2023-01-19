@@ -3,7 +3,7 @@ const seed = require ("../db/seeds/seed")
 const data = require ("../db/data/test-data/index")
 const  db   = require ("../db/connection")
 const app = require ("../db/app")
-const comments = require("../db/data/test-data/comments")
+
 
 
 
@@ -173,13 +173,37 @@ describe("4th endpoint, comments by review id", () => {
         })
     })
 })
-    describe.skip("5th endpoint, posting comments", () => {
+    describe("5th endpoint, posting comments", () => {
         test("5th endpoint response with a status", () => {
-            return request(app).post('/api/reviews/1/comments').expect(201)
+          return request(app).post('/api/reviews/1/comments').expect(201).send({
+            body: "blah blah blah", username : 'bainesface'})
+            
 
         })
-    })
-    
+        test("5th endpoint will reject a post with invalid review_id", () => {
+            return request(app).post('/api/reviews/cheese/comments').expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe("Bad Request")
+            })
+        })
+        test("Will respond with an error message if an unavailable ID is given", () => {
+            return request(app).post('/api/reviews/10000/comments').expect(404).send({
+                body : "I AM A STRING", username : 'bainesface'})
+            
+            .then((response) => {
+                expect(response.body.msg).toBe("Not Found")
+            })
+        })
+        test('Will respond with an error message if the comment is not in text format, i.e string', () => {
+            return request(app).post('/api/reviews/1/comments').expect(400).send({
+                body :3824542638743837291783, username: 'bainesface'})
+                .then((response) => {
+                    expect(response.body.msg).toBe("Bad Request")
+                })
+        })
+        //remember to include test for invalid usernames ones endpoint get:users is complete
+})
+
 
 
 
