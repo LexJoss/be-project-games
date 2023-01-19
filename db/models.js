@@ -49,11 +49,22 @@ const fetchCommentsByRid = (review_id) => {
         
 }
 
+const postComments = (review_id) => {
+    const values = [review_id.review_id]
+
+    const sqlString = `SELECT * FROM comments
+    WHERE comments.review_id = $1`
+
+    return db.query(sqlString, values)
+    .then (({rows}) => rows)
+}
+
 
 
 module.exports = {
     fetchCategories,
     fetchReviews,
     fetchReviewByID,
-    fetchCommentsByRid
+    fetchCommentsByRid,
+    postComments
 }

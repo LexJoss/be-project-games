@@ -147,6 +147,7 @@ describe("4th endpoint, comments by review id", () => {
         return request(app).get('/api/reviews/2/comments').expect(200)
         .then (response => {
             const comments = response.body
+            expect(comments.length).toBe(3)
             comments.forEach((comment) =>{
                 expect(comment.review_id).toBe(2)
             })
@@ -172,11 +173,9 @@ describe("4th endpoint, comments by review id", () => {
         })
     })
 })
-    describe("5th endpoint, posting comments", () => {
-        test.skip("5th endpoint response with a status", () => {
-            return request(app).post('/api/reviews/1/comments', {
-                post : "It was okay"
-            }).expect(200)
+    describe.skip("5th endpoint, posting comments", () => {
+        test("5th endpoint response with a status", () => {
+            return request(app).post('/api/reviews/1/comments').expect(201)
 
         })
     })

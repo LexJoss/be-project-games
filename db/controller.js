@@ -2,7 +2,9 @@ const {
     fetchCategories, 
     fetchReviews, 
     fetchReviewByID, 
-    fetchCommentsByRid} = require ('./models')
+    fetchCommentsByRid,
+    postComments
+                    } = require ('./models')
 
 
 
@@ -42,8 +44,11 @@ const getCommentsByRid = (req, res, next) => {
 
 const sendComments = (req, res, next) => {
     const query = req.params
-    const post = req.param.body
-    console.log(post)
+    const post = req.params.body
+    postComments(post)
+    .then((comments) => {
+        res.status(201).send(comments)
+    })
     
 }
 
