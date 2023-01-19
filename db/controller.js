@@ -24,7 +24,6 @@ const getReviews = (req, res, next) => {
 
 const getReviewsByID = (req, res, next) => {
     const query = req.params.review_id
-    console.log(query)
     fetchReviewByID(query)
     .then((reviewsID) => {
         res.status(200).send(reviewsID)
