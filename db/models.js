@@ -21,6 +21,7 @@ const fetchReviews = () => {
 }
 
 const fetchReviewByID = (review_id) => {
+    if (isNaN(review_id)) {return Promise.reject({status : 400, msg : "Not Found"})}
     const sqlString = `SELECT * FROM reviews
     WHERE reviews.review_id = $1;`
 
@@ -38,6 +39,7 @@ const fetchReviewByID = (review_id) => {
 
 const fetchCommentsByRid = (review_id) => {
     const values = [review_id.review_id]
+    if (isNaN(values)) {return Promise.reject({status : 400, msg : "Not Found"})}
     const sqlString = `SELECT * FROM comments
     WHERE comments.review_id = $1;`
 

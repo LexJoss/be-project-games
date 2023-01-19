@@ -116,6 +116,12 @@ describe("3rd endpoint, parametric. Get reviews by I.D", () => {
             expect(response.body.msg).toBe("Not Found")
         })
     })
+    test("Will respond with an error message if an invalid parameter is given", () => {
+        return request(app).get('/api/reviews/cheese').expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe("Not Found")
+        })
+    })
 })
 describe("4th endpoint, comments by review id", () => {
     test("4th endpoint responds with a status 200", () => {
@@ -152,10 +158,13 @@ describe("4th endpoint, comments by review id", () => {
             expect(response.body.msg).toBe("Not Found")
         })
     })
+    test("Will respond with an error message if an invalid parameter is given", () => {
+        return request(app).get('/api/reviews/cheese').expect(400)
+        .then((response) => {
+            expect(response.body.msg).toBe("Not Found")
+        })
+    })
 })
-
-
-
 
 
 
