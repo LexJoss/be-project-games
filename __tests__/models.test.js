@@ -208,7 +208,6 @@ describe("4th endpoint, comments by review id", () => {
                 .then(response => {
                     expect(response.length).not.toBe(0)
                     const comment = response.body
-                    console.log(comment)
                     expect(comment[0].body).toBe("blah blah blah")
                     expect(comment[0].review_id).toBe(1)
                     expect(comment[0].author).toBe('bainesface')
@@ -218,10 +217,6 @@ describe("4th endpoint, comments by review id", () => {
                     
                 })
     
-        //remember to include test for invalid usernames ones endpoint get:users is complete
-    })
-})
-
-
-
-
+        
+            })
+        })
