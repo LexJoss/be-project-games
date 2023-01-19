@@ -173,7 +173,7 @@ describe("4th endpoint, comments by review id", () => {
         })
     })
 })
-    describe.only("5th endpoint, posting comments", () => {
+    describe("5th endpoint, posting comments", () => {
         test("5th endpoint response with a status", () => {
           return request(app).post('/api/reviews/1/comments').expect(201).send({
             body: "blah blah blah", username : 'bainesface'})
@@ -216,7 +216,40 @@ describe("4th endpoint, comments by review id", () => {
                     expect(comment[0].comment_id).toBe(7)
                     
                 })
-    
-        
+            })
+            test('Responds with an error when not supplied complete information', () => {
+                return request(app).post('/api/reviews/1/comments').expect(400).send({
+                    body: "blah blah blah"
+                })
+                .then(response => {
+                    expect(response.body.msg).toBe("Bad Request")
+                })
+            })
+            test('Will ignore uneccessary properties sent in the request object', () => {
+                return request(app).post('/api/reviews/1/comments').expect(201).send({
+                    body: "blah blah blah", 
+                    username : "bainesface", 
+                    monkey : "I like monkeys",
+                    comment_id : 5478902366
+                })
+                .then(response => {
+                    expect(response.length).not.toBe(0)
+                    const comment = response.body
+                    expect(comment[0].body).toBe("blah blah blah")
+                    expect(comment[0].review_id).toBe(1)
+                    expect(comment[0].author).toBe('bainesface')
+                    expect(comment[0]).toHaveProperty('created_at', expect.any(String))
+                    expect(comment[0]).toHaveProperty('votes', expect.any(Number))
+                    expect(comment[0].comment_id).toBe(7)
+                    expect(comment[0]).not.toHaveProperty('monkey')
+                    
             })
         })
+        test("should respond with an error message if an invalid username is provided", () => {
+            return request(app).post('/api/reviews/1/comments').expect(400).send({
+                body: "blah blah blah", username : "monkey"
+            }).then(response => {
+                expect(response.body.msg).toBe("Bad Request")
+            })
+        })
+    })

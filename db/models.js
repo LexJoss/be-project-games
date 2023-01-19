@@ -51,18 +51,30 @@ const fetchCommentsByRid = (review_id) => {
 
 const postComments = (query, post) => {
     const values = [query.review_id, post.body, post.username]
+    const values2 = [post.username]
+    
+    if (post.body === undefined || post.username === undefined) {return Promise.reject({status : 400, msg : "Bad Request"})}
     if (isNaN(query.review_id) || (typeof post.body) !== 'string') {return Promise.reject({status : 400, msg : "Bad Request"})}
-   
+    
+    const checkUserSql = `SELECT * FROM users
+    WHERE username = $1;`
 
+    
     const sqlString = `INSERT INTO comments (review_id, body, author)
     VALUES
     ($1, $2, $3)
     RETURNING *;`
 
+    return db.query(checkUserSql, values2).then((result) => {
+        if (result.rowCount === 0) {return Promise.reject({status: 400, msg: "Bad Request"})}
+        else {
+    
+
     return fetchReviewByID(query.review_id)
         .then(() => { return db.query(sqlString, values) })
-        .then(({ rows }) => rows)
-}
+        .then(({ rows }) => rows)}} 
+        )}
+
 
 
 
