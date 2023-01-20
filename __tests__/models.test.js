@@ -245,11 +245,11 @@ describe("4th endpoint, comments by review id", () => {
                     
             })
         })
-        test("should respond with an error message if an invalid username is provided", () => {
+        test.only("should respond with an error message if an invalid username is provided", () => {
             return request(app).post('/api/reviews/1/comments').expect(400).send({
                 body: "blah blah blah", username : "monkey"
             }).then(response => {
-                expect(response.body.msg).toBe("Bad Request")
+                expect(response.body.msg).toBe("Not a Valid Username")
             })
         })
     })

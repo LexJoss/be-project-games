@@ -66,7 +66,7 @@ const postComments = (query, post) => {
     RETURNING *;`
 
     return db.query(checkUserSql, values2).then((result) => {
-        if (result.rowCount === 0) {return Promise.reject({status: 400, msg: "Bad Request"})}
+        if (result.rowCount === 0) {return Promise.reject({status: 400, msg: "Not a Valid Username"})}
         else {
     
 
