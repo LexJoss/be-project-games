@@ -253,3 +253,10 @@ describe("4th endpoint, comments by review id", () => {
             })
         })
     })
+describe.only("6th endpoint, PATCH", () => {
+    test("6th endpoint responds with a status code", () => {
+        return request(app).patch('/api/reviews/1').expect(200).send({
+            inc_votes : 0
+        })
+    })
+})

@@ -1,3 +1,4 @@
+const { string } = require("pg-format")
 const db = require("./connection")
 
 
@@ -73,7 +74,16 @@ const postComments = (query, post) => {
     return fetchReviewByID(query.review_id)
         .then(() => { return db.query(sqlString, values) })
         .then(({ rows }) => rows)}} 
-        )}
+)}
+
+const patchVotes = (query, patch) => {
+    const values = [query.review_id, patch]
+    
+    const sqlString = `SELECT * FROM reviews;`
+
+     return db.query(sqlString) 
+    .then(({ rows }) => rows)
+}
 
 
 
@@ -83,5 +93,6 @@ module.exports = {
     fetchReviews,
     fetchReviewByID,
     fetchCommentsByRid,
-    postComments
+    postComments,
+    patchVotes
 }

@@ -3,7 +3,8 @@ const {
     fetchReviews, 
     fetchReviewByID, 
     fetchCommentsByRid,
-    postComments
+    postComments,
+    patchVotes
                     } = require ('./models')
 
 
@@ -53,6 +54,16 @@ const sendComments = (req, res, next) => {
     
 }
 
+const sendPatch = (req, res, next) => {
+    const query = req.params
+    const patch = req.body.inc_votes
+    patchVotes(query, patch)
+    .then((response) => {
+        res.status(200).send(response)
+    })
+    .catch(err => next(err))
+}
+
 
 
 
@@ -63,4 +74,5 @@ module.exports = {
     getReviews, 
     getReviewsByID, 
     getCommentsByRid,
-    sendComments}
+    sendComments,
+    sendPatch}
