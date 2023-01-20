@@ -78,12 +78,21 @@ const postComments = (query, post) => {
 
 const patchVotes = (query, patch) => {
     const values = [query.review_id, patch]
-    
-    const sqlString = `SELECT * FROM reviews;`
 
-     return db.query(sqlString) 
-    .then(({ rows }) => rows)
+    
+    if (isNaN(patch) || patch === undefined) {return Promise.reject({status : 400, msg: "Bad Request"})}
+
+    const sqlString = `UPDATE reviews
+    SET votes = votes + $2
+    WHERE review_id = $1
+    RETURNING *;`
+
+    return fetchReviewByID(query.review_id)
+    .then (() => {return db.query(sqlString, values)
+    .then(({rows}) => rows)}) 
 }
+    
+
 
 
 

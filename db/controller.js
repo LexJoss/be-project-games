@@ -54,7 +54,8 @@ const sendComments = (req, res, next) => {
     
 }
 
-const sendPatch = (req, res, next) => {
+
+const sendPatch =(req, res, next) => {
     const query = req.params
     const patch = req.body.inc_votes
     patchVotes(query, patch)
@@ -66,13 +67,11 @@ const sendPatch = (req, res, next) => {
 
 
 
-
-
-
 module.exports = { 
     getCategories, 
     getReviews, 
     getReviewsByID, 
     getCommentsByRid,
     sendComments,
-    sendPatch}
+    sendPatch
+    }
