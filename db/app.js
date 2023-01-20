@@ -6,7 +6,8 @@ const { getCategories,
         getReviewsByID, 
         getCommentsByRid,
         sendComments,
-        sendPatch
+        sendPatch,
+        getUsers
                         }  = require ('./controller')
 
 
@@ -21,6 +22,8 @@ app.get('/api/reviews/:review_id', getReviewsByID)
 
 
 app.get('/api/reviews/:review_id/comments', getCommentsByRid)
+
+app.get('/api/users', getUsers)
 
 app.post('/api/reviews/:review_id/comments', sendComments)
 

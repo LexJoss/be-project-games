@@ -4,7 +4,8 @@ const {
     fetchReviewByID, 
     fetchCommentsByRid,
     postComments,
-    patchVotes
+    patchVotes,
+    fetchUsers
                     } = require ('./models')
 
 
@@ -65,6 +66,15 @@ const sendPatch =(req, res, next) => {
     .catch(err => next(err))
 }
 
+const getUsers = (req, res, next) => {
+    fetchUsers()
+    .then((users) => {
+        res.status(200).send(users)
+    })
+    .catch(err => next(err))
+
+}
+
 
 
 module.exports = { 
@@ -73,5 +83,6 @@ module.exports = {
     getReviewsByID, 
     getCommentsByRid,
     sendComments,
-    sendPatch
+    sendPatch,
+    getUsers
     }
