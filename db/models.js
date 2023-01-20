@@ -1,3 +1,4 @@
+const { string } = require("pg-format")
 const db = require("./connection")
 
 
@@ -73,7 +74,25 @@ const postComments = (query, post) => {
     return fetchReviewByID(query.review_id)
         .then(() => { return db.query(sqlString, values) })
         .then(({ rows }) => rows)}} 
-        )}
+)}
+
+const patchVotes = (query, patch) => {
+    const values = [query.review_id, patch]
+
+    
+    if (isNaN(patch) || patch === undefined) {return Promise.reject({status : 400, msg: "Bad Request"})}
+
+    const sqlString = `UPDATE reviews
+    SET votes = votes + $2
+    WHERE review_id = $1
+    RETURNING *;`
+
+    return fetchReviewByID(query.review_id)
+    .then (() => {return db.query(sqlString, values)
+    .then(({rows}) => rows)}) 
+}
+    
+
 
 
 
@@ -83,5 +102,6 @@ module.exports = {
     fetchReviews,
     fetchReviewByID,
     fetchCommentsByRid,
-    postComments
+    postComments,
+    patchVotes
 }

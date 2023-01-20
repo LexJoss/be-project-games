@@ -253,3 +253,87 @@ describe("4th endpoint, comments by review id", () => {
             })
         })
     })
+describe("6th endpoint, PATCH", () => {
+    test("6th endpoint responds with a status code", () => {
+        return request(app).patch('/api/reviews/1').expect(200).send({
+            inc_votes : 0
+        })
+    })
+    test("6th endpoint can update the votes property of the correct review", () => {
+        return request(app).patch('/api/reviews/1').expect(200).send({
+            inc_votes: 1
+            }).then(response => {
+                expect(response.length).not.toBe(0)
+                const review = response.body
+                expect(review[0].votes).toBe(2)
+                expect(review[0].review_id).toBe(1)
+            })
+    })
+    test("can also decrement review votes", () => {
+        return request(app).patch('/api/reviews/1').expect(200).send({
+            inc_votes: -1
+        }).then(response => {
+                expect(response.length).not.toBe(0)
+                const review = response.body
+                expect(review[0].votes).toBe(0)
+        })
+    })
+    test("can decrement the votes count below 0, to indicate a negative score", () => {
+        return request(app).patch('/api/reviews/1').expect(200).send({
+            inc_votes: -11
+        }).then(response => {
+            expect(response.length).not.toBe(0)
+            const review = response.body
+            expect(review[0].votes).toBe(-10)
+        })
+    })
+    test('Will respond with an error message if the passed parameter is not a number', () => {
+        return request(app).patch('/api/reviews/1').expect(400).send({
+            inc_votes : 'bainesface'})
+            .then((response) => {
+                expect(response.body.msg).toBe("Bad Request")
+            })
+    })
+    test("Will respond with an error message if an unavailable ID is given", () => {
+        return request(app).patch('/api/reviews/10000').expect(404).send({
+            inc_votes: 1})
+        
+        .then((response) => {
+            expect(response.body.msg).toBe("Not Found")
+        })
+    })
+    test("6th endpoint will reject a post with invalid review_id", () => {
+        return request(app).patch('/api/reviews/cheese').expect(400).send({
+            inc_votes: 1
+        })
+        .then((response) => {
+            expect(response.body.msg).toBe("Bad Request")
+        })
+    })
+    test('Responds with an error when not supplied complete information', () => {
+        return request(app).patch('/api/reviews/1').expect(400).send({
+            
+        })
+        .then(response => {
+            expect(response.body.msg).toBe("Bad Request")
+        })
+    })
+    test('Will ignore uneccessary properties sent in the request object', () => {
+        return request(app).patch('/api/reviews/1').expect(200).send({
+            inc_votes: 1,
+            username : "bainesface", 
+            monkey : "I like monkeys",
+            comment_id : 5478902366
+        })
+        .then(response => {
+            expect(response.length).not.toBe(0)
+                const review = response.body
+                expect(review[0].votes).toBe(2)
+                expect(review[0].review_id).toBe(1)
+                expect(review[0]).not.toHaveProperty('monkey')
+                expect(review[0]).not.toHaveProperty('username')
+                expect(review[0]).not.toHaveProperty('comment_id')
+            
+            })
+    })
+})
