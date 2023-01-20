@@ -37,7 +37,6 @@ const fetchReviewByID = (review_id) => {
         })
 }
 
-
 const fetchCommentsByRid = (review_id) => {
     const values = [review_id.review_id]
     if (isNaN(values)) {return Promise.reject({status : 400, msg : "Bad Request"})}
@@ -91,6 +90,14 @@ const patchVotes = (query, patch) => {
     .then (() => {return db.query(sqlString, values)
     .then(({rows}) => rows)}) 
 }
+
+const fetchUsers = () => {
+    
+    const sqlString = `SELECT * FROM users;`
+
+    return db.query(sqlString)
+    .then(({rows}) => rows)
+}
     
 
 
@@ -103,5 +110,6 @@ module.exports = {
     fetchReviewByID,
     fetchCommentsByRid,
     postComments,
-    patchVotes
+    patchVotes,
+    fetchUsers
 }

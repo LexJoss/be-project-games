@@ -337,3 +337,24 @@ describe("6th endpoint, PATCH", () => {
             })
     })
 })
+
+describe("7th endpoint, get users", () => {
+    test("7th endpoint respond with a status code", () => {
+        return request(app).get('/api/users').expect(200)
+    })
+    test("The returned reviews object contains the correct categories", () => {
+        return request(app).get('/api/users').expect(200)
+        .then(response => {
+            const users = response.body
+            const regex = /^https/ 
+            expect(users.length).toBe(4)
+            users.forEach((user) => {
+                expect(user).toHaveProperty('username', expect.any(String))
+                expect(user).toHaveProperty('name', expect.any(String))
+                expect(user).toHaveProperty('avatar_url', expect.any(String))
+                expect(user.avatar_url).toMatch(regex)
+            })
+        
+        })
+    }) 
+})
