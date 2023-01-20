@@ -44,11 +44,12 @@ const getCommentsByRid = (req, res, next) => {
 
 const sendComments = (req, res, next) => {
     const query = req.params
-    const post = req.params.body
-    postComments(post)
+    const post = req.body
+    postComments(query, post)
     .then((comments) => {
         res.status(201).send(comments)
     })
+    .catch(err => next(err))
     
 }
 
