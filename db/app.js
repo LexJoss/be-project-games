@@ -6,7 +6,8 @@ const { getCategories,
         getReviewsByID, 
         getCommentsByRid,
         sendComments,
-        sendPatch
+        sendPatch,
+        sendDelete
                         }  = require ('./controller')
 
 
@@ -25,6 +26,8 @@ app.get('/api/reviews/:review_id/comments', getCommentsByRid)
 app.post('/api/reviews/:review_id/comments', sendComments)
 
 app.patch('/api/reviews/:review_id', sendPatch)
+
+app.delete('/api/comments/:comment_id', sendDelete)
 
 //error handling
 
