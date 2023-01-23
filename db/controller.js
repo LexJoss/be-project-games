@@ -4,7 +4,8 @@ const {
     fetchReviewByID, 
     fetchCommentsByRid,
     postComments,
-    patchVotes
+    patchVotes,
+    deleteComment
                     } = require ('./models')
 
 
@@ -18,12 +19,12 @@ const getCategories = (req, res, next) => {
     
 
 const getReviews = (req, res, next) => {
-    fetchReviews()
+    const query = req.query
+    fetchReviews(query)
     .then((reviews) => {
         res.status(200).send(reviews)})
-    
-}
-
+    .catch(err => next(err))
+    }
 
 const getReviewsByID = (req, res, next) => {
     const query = req.params.review_id
@@ -65,6 +66,15 @@ const sendPatch =(req, res, next) => {
     .catch(err => next(err))
 }
 
+const sendDelete = (req, res, next) => {
+    const query = req.params
+    deleteComment(query)
+    .then((response) => {
+        res.status(204).send(response)
+    })
+    .catch(err => next(err))
+}
+
 
 
 module.exports = { 
@@ -73,5 +83,6 @@ module.exports = {
     getReviewsByID, 
     getCommentsByRid,
     sendComments,
-    sendPatch
+    sendPatch,
+    sendDelete
     }

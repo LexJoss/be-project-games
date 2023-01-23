@@ -66,7 +66,7 @@ describe("2nd endpoint, reviews, can return status 200", () => {
         return request(app).get('/api/reviews').expect(200)
         .then(response => {
             const reviews = response.body
-            expect(reviews).toBeSorted({descending: true})
+            expect(reviews).toBeSorted({descending: true, coerce: true})
         })
     })
     test("Can return the number of comments that share the review_id property of the parent review", () => {
@@ -81,6 +81,68 @@ describe("2nd endpoint, reviews, can return status 200", () => {
             
         })
     })
+    test('Can be set to display in ascending order', () => {
+        return request(app).get("/api/reviews?order=asc").expect(200)
+        .then(response => {
+            const reviews = response.body
+            expect(reviews).toBeSorted( {ascending: true})
+        })
+    })
+    test('Can be set to order by different columns and ascending or descending', () => {
+        return request(app).get('/api/reviews?sort_by=review_id&order=desc').expect(200)
+        .then(response => {
+            const reviews = response.body
+            expect(reviews).toBeSortedBy( 'review_id', {descending: true})
+        })
+    })
+    test('Ditto, new values', () => {
+        return request(app).get('/api/reviews?sort_by=votes&order=asc').expect(200)
+        .then(response => {
+            const reviews = response.body
+            expect(reviews).toBeSortedBy( 'votes', {ascending: true})
+        })
+    })
+    test('Will throw an error if a false query value value is provided', () => {
+        return request(app).get('/api/reviews?sort_by=cheese').expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("Bad Request")
+        })
+    })
+    test('Will throw and error if a false ascending or descending request is made', () => {
+        return request(app).get('/api/reviews?order=cheese').expect(400)
+        .then(response => {
+            expect(response.body.msg).toBe("Bad Request")
+        })
+    })
+    test('Can return only specfic categories when provided', () => {
+        return request(app).get('/api/reviews?category=social deduction').expect(200)
+        .then(response => {
+            const reviews = response.body
+            expect(reviews.length).not.toBe(0)
+            reviews.forEach((review) => {
+                expect(review.category).toBe('social deduction')
+            })
+        })
+    })
+    test('Will return an empty response body if the category does not exist', () => {
+        return request(app).get('/api/reviews?category=cheese').expect(200)
+        .then(response => {
+            const reviews = response.body
+            expect(reviews.length).toBe(0)
+        })
+    })
+    test('Can do all three query paramters in a single request', () => {
+        return request(app).get('/api/reviews?category=dexterity&order=asc&sort_by=votes').expect(200)
+        .then(response => {
+            const reviews = response.body
+            expect(reviews.length).not.toBe(0)
+            expect(reviews).toBeSortedBy('votes', {ascending: true})
+            reviews.forEach(review => {
+                expect(review.category).toBe('dexterity')})
+            
+        })
+    })
+    
 })
 
 describe("3rd endpoint, parametric. Get reviews by I.D", () => {
@@ -91,6 +153,7 @@ describe("3rd endpoint, parametric. Get reviews by I.D", () => {
         return request(app).get('/api/reviews/1').expect(200)
         .then(response => {
             const review = response.body
+            const regex = /[0-9]*/
                 expect(review[0]).toHaveProperty('owner', expect.any(String))
                 expect(review[0]).toHaveProperty('title', expect.any(String))
                 expect(review[0]).toHaveProperty('votes', expect.any(Number))
@@ -99,6 +162,8 @@ describe("3rd endpoint, parametric. Get reviews by I.D", () => {
                 expect(review[0]).toHaveProperty('review_img_url', expect.any(String))
                 expect(review[0]).toHaveProperty('designer', expect.any(String))
                 expect(review[0]).toHaveProperty('review_id', expect.any(Number))
+                expect(review[0]).toHaveProperty('comment_count', expect.any(String))
+                expect(review[0].comment_count).toMatch(regex)
         
         })
     })
@@ -337,3 +402,23 @@ describe("6th endpoint, PATCH", () => {
             })
     })
 })
+
+describe("8th endpoint, deletion", () => {
+    test('the 8th endpoint response with a status code', () => {
+        return request(app).delete('/api/comments/1').expect(204)
+        
+        })
+        test('will throw a 400 error if the parameter cannot resolve to a number', () => {
+            return request(app).delete('/api/comments/cheese').expect(400)
+            .then(response => {
+                expect(response.body.msg).toBe("Bad Request")
+            })
+        })
+        test('Will throw a 404 error if the comment_id does not exist', () => {
+            return request(app).delete('/api/comments/100000').expect(404)
+            .then(response => {
+                expect(response.body.msg).toBe("Not Found")
+            })
+        })
+    })
+
